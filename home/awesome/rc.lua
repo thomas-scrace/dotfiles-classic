@@ -10,6 +10,12 @@ require("naughty")
 -- Load Debian menu entries
 require("debian.menu")
 
+-- Load vicious library
+vicious = require("vicious")
+
+-- Initialize widgets and register
+datewidget = widget({ type = "textbox" })
+vicious.register(datewidget, vicious.widgets.date, "%a, %d %b %Y %H:%M %z", 60)
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -69,36 +75,10 @@ for s = 1, screen.count() do
 end
 -- }}}
 
--- {{{ Menu
--- Create a laucher widget and a main menu
-myawesomemenu = {
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", awesome.quit }
-}
-
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "Debian", debian.menu.Debian_menu.Debian },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
-                                     menu = mymainmenu })
--- }}}
-
 -- {{{ Wibox
--- Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" })
-
--- Create a systray
-mysystray = widget({ type = "systray" })
-
 -- Create a wibox for each screen and add it
 mywibox = {}
 mypromptbox = {}
-mylayoutbox = {}
 mytaglist = {}
 mytaglist.buttons = awful.util.table.join(
                     awful.button({ }, 1, awful.tag.viewonly),
@@ -143,20 +123,13 @@ mytasklist.buttons = awful.util.table.join(
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    mylayoutbox[s] = awful.widget.layoutbox(s)
-    mylayoutbox[s]:buttons(awful.util.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
-                           awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
     mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
-
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(function(c)
-                                              return awful.widget.tasklist.label.currenttags(c, s)
+                                              --remove tasklist-icon without modifying the original tasklist.lua
+                                              tmp_tasklist = { awful.widget.tasklist.label.currenttags(c, s) }
+                                              return tmp_tasklist[1], tmp_tasklist[2], tmp_tasklist[3], nil
                                           end, mytasklist.buttons)
 
     -- Create the wibox
@@ -164,14 +137,11 @@ for s = 1, screen.count() do
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = {
         {
-            mylauncher,
             mytaglist[s],
             mypromptbox[s],
             layout = awful.widget.layout.horizontal.leftright
         },
-        mylayoutbox[s],
-        mytextclock,
-        s == 1 and mysystray or nil,
+        datewidget,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
     }
