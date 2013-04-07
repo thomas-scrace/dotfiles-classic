@@ -1,12 +1,15 @@
 urxvt*font: xft:Inconsolata:pixelsize=16
 urxvt*boldFont: xft:Inconsolata:pixelsize=16
 
+Emacs.font: Inconsolata:pixelsize=16
+Emacs.FontBackend: xft
+
 !-------------------------------------------------------------------------------
 ! Xft settings
 !-------------------------------------------------------------------------------
 
 Xft.dpi:                    96
-Xft.antialias:              false
+Xft.antialias:              true
 Xft.rgba:                   rgb
 Xft.hinting:                true
 Xft.hintstyle:              hintslight
