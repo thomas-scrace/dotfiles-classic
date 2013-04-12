@@ -2,33 +2,27 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
+(let ((default-directory "~/.emacs.d/"))
+      (normal-top-level-add-subdirs-to-load-path))
+(global-linum-mode 1)
+(require 'package)
+;; Add the original Emacs Lisp Package Archive
+(add-to-list 'package-archives
+             '("elpa" . "http://tromey.com/elpa/"))
+;; Add the user-contributed repository
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+(load-theme 'wombat t)
+(set-default-font "Inconsolata-12")
+
+;; show matching parens
+(show-paren-mode 1)
+
+;; always show column numbers
+(column-number-mode 1)
+
 (setq inhibit-startup-message t)
-
-(defun vi-open-line-above ()
-  "Insert a newline above the current line and put point at beginning."
-  (interactive)
-  (unless (bolp)
-    (beginning-of-line))
-  (newline)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-(defun vi-open-line-below ()
-  "Insert a newline below the current line and put point at beginning."
-  (interactive)
-  (unless (eolp)
-    (end-of-line))
-  (newline-and-indent))
-
-(defun vi-open-line (&optional abovep)
-  "Insert a newline below the current line and put point at beginning.
-With a prefix argument, insert a newline above the current line."
-  (interactive "P")
-  (if abovep
-      (vi-open-line-above)
-    (vi-open-line-below)))
-
-(define-key global-map [(control o)] 'vi-open-line)
 
 (require 'linum)
 (custom-set-variables
@@ -45,3 +39,24 @@ With a prefix argument, insert a newline above the current line."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(mapc (lambda (hook)
+        (add-hook hook (lambda ()
+                         (setq show-trailing-whitespace t))))
+      '(text-mode-hook
+        emacs-lisp-mode-hook
+        python-mode-hook
+        js2-mode-hook
+        css-mode-hook
+        ))
+(require 'column-marker)
+
+(mapc (lambda (hook)
+        (add-hook hook (lambda () (interactive) (column-marker-1 80))))
+      '(org-mode-hook
+        emacs-lisp-mode-hook
+        python-mode-hook
+        js2-mode-hook
+        text-mode-hook))
+
+(require 'flymake-python-pyflakes)
+(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
