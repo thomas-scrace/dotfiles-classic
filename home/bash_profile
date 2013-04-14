@@ -1,3 +1,6 @@
 eval $(keychain --eval --agents ssh -Q --quiet id_ecdsa)
-export EDITOR=vi
-xmodmap ~/.xmodmap
+alias e='emacsclient -c'
+export TERM=urxvt
+export EDITOR=e
+export ALTERNATE_EDITOR=""
+export VISUAL=e

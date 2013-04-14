@@ -1,1 +1,2 @@
-exec awesome
+setxkbmap -layout gb -option ctrl:nocaps
+exec i3
