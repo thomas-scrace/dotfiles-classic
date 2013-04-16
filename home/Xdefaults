@@ -1,5 +1,5 @@
-urxvt*font: xft:Inconsolata:pixelsize=16
-urxvt*boldFont: xft:Inconsolata:pixelsize=16
+urxvt*font: xft:Inconsolata:pixelsize=14
+urxvt*boldFont: xft:Inconsolata:pixelsize=14
 
 Emacs.font: Inconsolata:pixelsize=16
 Emacs.FontBackend: xft
