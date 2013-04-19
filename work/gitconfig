@@ -22,4 +22,4 @@
 
 [core]
         excludesfile = ~/.gitignore
-        editor = vim
+        editor = emacs
